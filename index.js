@@ -33,6 +33,7 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
+
   try { 
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -54,7 +55,7 @@ async function run() {
     })
     //create//
 
-
+  
     //read//
 
 
@@ -71,8 +72,6 @@ async function run() {
 
 
     //Delete//
-
-
     app.delete('/users/:id',  async(req, res) => {
           
        const id = req.params.id
@@ -82,8 +81,43 @@ async function run() {
        res.send(result)
 
     })
-    
-    //Delete//
+    //Delete// 
+
+
+    //Update//
+      
+    app.get('/users/:id',  async(req, res) => {
+          
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result  = await userCollection.findOne(query)
+      res.send(result)
+
+   })
+
+
+    app.put('/users/:id',  async(req, res) => {
+          
+      const id = req.params.id
+      const updateUser = req.body
+      console.log(id, updateUser)
+      const filter = {_id: new ObjectId(id) }
+      const option = {upsert: true}
+      const upUser = {
+        $set:{
+           name: updateUser.name,
+           email: updateUser.email
+        }
+      }
+
+      const result = await userCollection.updateOne(filter, upUser, option)
+      res.result(result)
+
+   })
+
+    //Update//
+
+
     //CRUD
 
     await client.db("admin").command({ ping: 1 });
